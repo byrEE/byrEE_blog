@@ -1,4 +1,4 @@
-package com.byrEE.blog.support.web;
+package com.byrEE.support.web;
 
 import org.pegdown.*;
 import org.pegdown.ast.RootNode;
@@ -6,6 +6,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+
+import com.byrEE.support.web.MarkdownService;
+import com.byrEE.support.web.PygmentsVerbatimSerializer;
 
 /**
  * @author byrEE

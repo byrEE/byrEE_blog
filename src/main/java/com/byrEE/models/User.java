@@ -1,22 +1,20 @@
 package com.byrEE.models;
 
-import com.fastxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
-import lombok.Getter;
-import lombok.Setter;
 import lombok.NonNull;
 
+import org.springframework.data.mongodb.core.index.Indexed;
 
 /**
  * @author byrEE
  */
 
-@Getter @Setter
 @Document(collection="user")
 public class User extends BaseModel{
 	public static final String ROLE_ADMIN="ROLE_ADMIN";
@@ -31,6 +29,30 @@ public class User extends BaseModel{
 	private String password;
 
 	private String role=ROLE_USER;
+
+	public String getEmail(){
+		return email;
+	}
+
+	public void setEmail(String email){
+		this.email=email;
+	}
+
+	public String getPassword(){
+		return password;
+	}
+
+	public void setPassword(String password){
+		this.password=password;
+	}	
+
+	public String getRole(){
+		return role;
+	}
+
+	public void setRole(String role){
+		this.role=role;
+	}	
 
 	@DBRef
 	private Collection<Post> posts=new ArrayList<>();

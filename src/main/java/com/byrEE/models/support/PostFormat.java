@@ -25,6 +25,6 @@ public enum PostFormat{
 
 	@Override
 	public String toString(){
-		return getDisplayName();
+		return getName();
 	}
 }

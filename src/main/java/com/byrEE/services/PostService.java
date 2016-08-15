@@ -21,7 +21,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.byrEE.services.TagService;
+import com.byrEE.services.UserService;
+
 import java.util.*;
+
+import com.byrEE.services.UserService;
 /**
  * @author  byrEE
  */
@@ -32,10 +37,10 @@ public class PostService{
 	private PostRepository postRepository;
 
 	@Autowired
-	private TagRepository tagRepository;
+    private TagService tagService;
 
-	@Autowired
-	private UserRepository userRepository;
+    @Autowired
+    private UserService userService;
 
 	public static final String CACHE_NAME = "cache.post";
     public static final String CACHE_NAME_ARCHIVE = CACHE_NAME + ".archive";
@@ -51,19 +56,19 @@ public class PostService{
     	
     	Post post=postRepository.findOne(postId);
 
-    	if (post=null){
+    	if (post==null){
     		throw new NotFoundException("Post with id "+postId+" is not found");
     	}
     	return post;
     }
 
     @Cacheable(CACHE_NAME)
-    public Post getPublishedPostByPermalink(String permaink){
+    public Post getPublishedPostByPermalink(String permalink){
     	logger.debug("Get post with permalink "+permalink);
 
     	Post post=postRepository.findByPermalinkAndPostStatus(permalink,PostStatus.PUBLISHED);
 
-	   	if (post=null){
+	   	if (post==null){
     		throw new NotFoundException("Post with permalink "+permalink+" is not found");
     	}
 
@@ -106,7 +111,7 @@ public class PostService{
    	Iterable<Post> posts=postRepository.findAllByPostTypeAndPostStatus(
    		PostType.POST,
         PostStatus.PUBLISHED,
-        new PageRequest(0, Integer.MAX_VALUE, Sort.Direction.DESC, "createdAt"));
+        new PageRequest(0, Integer.MAX_VALUE));//, Sort.Direction.DESC, "createdAt"));
 
    	List<Post> cachePosts =new ArrayList<>();
 
@@ -131,12 +136,22 @@ public class PostService{
         archivePost.setId(post.getId());
         archivePost.setTitle(post.getTitle());
         archivePost.setPermalink(post.getPermalink());
-        archivePost.setCreatedAt(post.getCreatedAt());
+        archivePost.setCreateAt(post.getCreateAt());
 
         return archivePost;
     }
 
-    public createAboutPage(){
+    @Cacheable(value = CACHE_NAME_PAGE, key = "T(java.lang.String).valueOf(#page).concat('-').concat(#pageSize)")
+    public Page<Post> getAllPublishedPostsByPage(int page, int pageSize) {
+        logger.debug("Get posts by page " + page);
+
+        return postRepository.findAllByPostTypeAndPostStatus(
+                PostType.POST,
+                PostStatus.PUBLISHED,
+                new PageRequest(page, pageSize));//, Sort.Direction.DESC, "createdAt"));
+    }
+
+    public Post createAboutPage(){
     	logger.debug("Create default about page");
 
     	Post post=new Post();
@@ -155,33 +170,37 @@ public class PostService{
 
     	if(tagNames!=null && tagNames.isEmpty()){
     		tagNames=tagNames.toLowerCase();
-    		String[] names=tagNames.splite("\\s*,\\s*");
+    		String[] names=tagNames.split("\\s*,\\s*");
     		for(String name:names)
-    			tags.add(tagService.findOrCreatByName(name));
+    			tags.add(tagService.findOrCreateByName(name));
     	}
 
     	return tags;
     }
  
+    public void deletePost(Post post) {
+        postRepository.delete(post);
+    }
+    
  	public String getTagNames(Set<Tag> tags){
  		if(tags==null ||tags.isEmpty())
  			return "";
  		StringBuilder names=new StringBuilder();
  		tags.forEach(tag->names.append(tag.getName()).append(","));
- 		names.deleteCharAt(names.length-1);
+ 		names.deleteCharAt(names.length()-1);
 
  		return names.toString();
  	}
 
 	public Page<Post> findPostsByTag(String tagName, int page, int pageSize) {
-        return postRepository.findByTag(tagName, new PageRequest(page, pageSize, Sort.Direction.DESC, "createdAt"));
+        return postRepository.findByTags(tagName, new PageRequest(page, pageSize));
     }
 
 	@Cacheable(value = CACHE_NAME_COUNTS, key = "#root.method.name")
 	public List<Object[]> countPostsByTags(){
 		logger.debug("Count posts group by tags. ");
 
-		return postRepository.countPostsByTags(PostStatus.PUBLISHED);
+		return postRepository.countPostsByPostStatus(PostStatus.PUBLISHED);
 	}    	 	
 	
 

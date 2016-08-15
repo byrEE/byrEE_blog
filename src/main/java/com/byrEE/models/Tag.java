@@ -1,9 +1,11 @@
 package com.byrEE.models;
 
-import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.*;
 
-import lombok.Getter;
-import lombok.Setter;
+import org.springframework.data.annotation.Id;
+
+//import lombok.Getter;
+//import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,7 +15,7 @@ import java.util.List;
  */
 
 @Document(collection="tag")
-@Getter  @Setter
+
 public class Tag extends BaseModel{
 	@Field
 	@Id
@@ -21,6 +23,14 @@ public class Tag extends BaseModel{
 
 	//@DBRef
 	private List<Post> posts=new ArrayList<>();
+
+	public String getName(){
+		return name;
+	}
+
+	public void setName(String name){
+		this.name=name;
+	}
 
 	public Tag(){}
 

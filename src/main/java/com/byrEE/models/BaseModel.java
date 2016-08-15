@@ -1,9 +1,15 @@
 package com.byrEE.models;
 
 import java.util.Date;
-//import java.io.Serializable;
+import java.io.Serializable;
 import javax.persistence.*;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+
+import org.springframework.data.mongodb.core.mapping.*;
+
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.LastModifiedDate;
 /**
  * author byrEE
  */
@@ -23,7 +29,7 @@ public abstract class BaseModel implements Comparable<BaseModel>,Serializable{
 
 	@Override
 	public int compareTo(BaseModel o){
-		return.this.getId().compareTo(o.getId());
+		return this.getId().compareTo(o.getId());
 	}
 
 	public boolean equals(Object o){
@@ -40,11 +46,11 @@ public abstract class BaseModel implements Comparable<BaseModel>,Serializable{
 		return id;
 	}
 
-	public void setId(_id){
+	public void setId(Long _id){
 		this.id=_id;
 	}
 
-	public Date getCreatedAt(){
+	public Date getCreateAt(){
 		return createAt;
 	}
 

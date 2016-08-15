@@ -3,6 +3,16 @@ package com.byrEE.repositories;
 import java.util.List;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
+import com.byrEE.models.Post;
+import org.springframework.stereotype.Repository;
+
+import com.byrEE.models.support.PostStatus;
+import com.byrEE.models.support.PostType;
+
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
+
+import org.springframework.data.repository.query.Param;
 /**
  * @author byrEE
  */

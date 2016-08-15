@@ -28,6 +28,6 @@ public enum PostStatus{
 
 	@Override
 	public String toString(){
-		reutrn getName();
+		return getName();
 	}
 }

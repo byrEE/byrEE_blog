@@ -30,7 +30,7 @@ public class AdminUserController {
     private UserRepository userRepository;
 
     @Autowired
-    public UserController(UserService userService, UserRepository userRepository){
+    public AdminUserController(UserService userService, UserRepository userRepository){
         this.userService = userService;
         this.userRepository = userRepository;
     }

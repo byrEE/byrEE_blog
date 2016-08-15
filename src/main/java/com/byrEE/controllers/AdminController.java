@@ -17,7 +17,7 @@ import javax.validation.Valid;
  * @author byrEE
  */
 @Controller
-@RequestMpping("admin")
+@RequestMapping("admin")
 public class AdminController{
 	private AppSetting appSetting;
 

@@ -1,11 +1,27 @@
 package com.byrEE;
 
+
+import com.byrEE.services.UserService;
+
+import org.springframework.context.annotation.*;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.password.StandardPasswordEncoder;
+import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
+
+import org.springframework.context.annotation.*;
+
+
+
 /**
  * author byrEE
  */
 
 @Configuration
-public class SecurityConfig extends WebSecurityConfigureAdapter{
+public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
 	@Bean
 	public UserService userService(){
@@ -13,12 +29,12 @@ public class SecurityConfig extends WebSecurityConfigureAdapter{
 	}
 
 	@Bean
-	public TokenBasedRememberMeServices rememberMeServices{
+	public TokenBasedRememberMeServices rememberMeServices(){
 		return new TokenBasedRememberMeServices("remember-me-key",userService());
 	}
 
 	@Bean
-	public PasswordEncoder passwordEncoder{
+	public PasswordEncoder passwordEncoder(){
 		return new StandardPasswordEncoder();
 	}
 
@@ -47,7 +63,7 @@ public class SecurityConfig extends WebSecurityConfigureAdapter{
 			.logout()
 				.logoutUrl("/logout")
 				.permitAll()
-				.logoutSucessfulUrl("/login?logout")
+				.logoutSuccessUrl("/login?logout")
 				.and()
 			.rememberMe()
 				.rememberMeServices(rememberMeServices())
@@ -56,7 +72,7 @@ public class SecurityConfig extends WebSecurityConfigureAdapter{
 	}
 
 	@Override
-	protected void configure(WebSecurity web) throws Exception{
+	public void configure(WebSecurity web) throws Exception{
 		web
 			.ignoring()
 				.antMatchers("/static/**","/resources/**");

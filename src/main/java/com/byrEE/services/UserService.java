@@ -32,6 +32,8 @@ public class UserService implements UserDetailsService{
 	@Inject
 	private PasswordEncoder passwordEncoder;
 
+	private static final Logger logger = LoggerFactory.getLogger(UserService.class);
+
 	@PostConstruct
 	protected void initialize(){
 		getSuperUser();
@@ -51,6 +53,15 @@ public class UserService implements UserDetailsService{
 
 		return user;
 	}
+
+	@Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findByEmail(username);
+        if (user == null) {
+            throw new UsernameNotFoundException("user not found");
+        }
+        return createSpringUser(user);
+    }
 
 	public User currentUser(){
 		Authentication auth=SecurityContextHolder.getContext().getAuthentication();
